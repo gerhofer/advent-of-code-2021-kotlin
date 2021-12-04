@@ -32,13 +32,8 @@ object Day3 {
     }.joinToString("")
 
     fun part2(filePath: String) {
-        val lines = javaClass.getResource(filePath).readText()
-            .split("\n")
-
         val binaryNumbers = javaClass.getResource(filePath).readText()
             .split("\r\n")
-
-        val length = binaryNumbers.size
 
         val oxygenCandidates = binaryNumbers.toMutableList()
         var i = 0
