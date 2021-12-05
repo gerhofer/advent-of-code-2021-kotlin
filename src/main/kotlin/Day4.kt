@@ -58,7 +58,8 @@ data class Bingo(
 ) {
 
     fun mark(number: Int) {
-        field.flatten().filter { it.value == number }
+        field.flatten()
+            .filter { it.value == number }
             .forEach { it.marked = true }
     }
 
@@ -66,7 +67,7 @@ data class Bingo(
         val rowFilled = field.any {
             it.all { cell -> cell.marked }
         }
-        val columnFilled = (1..4).any { idx ->
+        val columnFilled = (0..4).any { idx ->
             field.map { it[idx] }.all { cell -> cell.marked }
         }
         return rowFilled || columnFilled
