@@ -28,7 +28,7 @@ object Day6 {
             .split(",")
             .map { it.trim().toInt() }
             .groupBy { it }
-            .map { (key, value ) -> value.size * getLanternFishCount(key) }
+            .map { (key, value) -> value.size * getLanternFishCount(key) }
             .sum()
 
         println(lanternFishCount)
@@ -36,18 +36,12 @@ object Day6 {
 
     fun getLanternFishCount(currentValue: Int): Long {
         var count = 1L
-        for (i in (currentValue)..(DAYS-1) step 7) {
-            if (8 + 1 + i > DAYS) {
-                count += 1
-            } else {
-                count += getLanternFishCount(8 + 1 + i)
-            }
+        for (i in (currentValue)..(DAYS - 1) step 7) {
+            count += getLanternFishCount(8 + 1 + i)
         }
         return count
     }
 
 }
 
-const val DUPLICATION_TIME = 6
-const val INITIAL_DUPLICATION_TIME = 8
 const val DAYS = 256
