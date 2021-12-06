@@ -26,7 +26,6 @@ object Day5 {
             .eachCount()
             .filter { it.value > 1 }
 
-        println(pointsCrossed)
         println(pointsCrossedMultipleTimes.size)
     }
 
