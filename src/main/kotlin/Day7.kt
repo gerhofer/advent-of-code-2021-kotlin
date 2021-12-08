@@ -15,6 +15,8 @@ object Day7 {
             crabPositions.sumOf { crabPosition -> abs(crabPosition - it) }
         }
 
+        println(crabPositions.average())
+
         val cheapestWay = positionsToFuelCosts.minByOrNull { it.value }
         println("${cheapestWay?.key} costs ${cheapestWay?.value}")
     }
