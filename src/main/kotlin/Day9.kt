@@ -76,6 +76,8 @@ object Day9 {
         val result = lowPoints.values.toList().sortedDescending().take(3)
             .foldRight(1) { a, b -> a * b }
 
+        println(lowPoints)
+
         println(result)
     }
 
