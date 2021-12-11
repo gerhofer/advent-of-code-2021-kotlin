@@ -41,13 +41,13 @@ data class Path(
     )
 
     fun getPoints(): List<Point> {
-        return if (from.x == to.x) {
-            (min(from.y, to.y)..max(from.y, to.y)).map {
-                Point(from.x, it)
+        return if (from.col == to.col) {
+            (min(from.row, to.row)..max(from.row, to.row)).map {
+                Point(from.col, it)
             }
-        } else if (from.y == to.y) {
-            (min(from.x, to.x)..max(from.x, to.x)).map {
-                Point(it, from.y)
+        } else if (from.row == to.row) {
+            (min(from.col, to.col)..max(from.col, to.col)).map {
+                Point(it, from.row)
             }
         } else {
             emptyList()
@@ -55,17 +55,17 @@ data class Path(
     }
 
     fun getPointsWithDiagonals(): List<Point> {
-        return if (from.x == to.x) {
-            (min(from.y, to.y)..max(from.y, to.y)).map {
-                Point(from.x, it)
+        return if (from.col == to.col) {
+            (min(from.row, to.row)..max(from.row, to.row)).map {
+                Point(from.col, it)
             }
-        } else if (from.y == to.y) {
-            (min(from.x, to.x)..max(from.x, to.x)).map {
-                Point(it, from.y)
+        } else if (from.row == to.row) {
+            (min(from.col, to.col)..max(from.col, to.col)).map {
+                Point(it, from.row)
             }
         } else {
-            val xValues = getNumbersInRange(from.x, to.x)
-            val yValues = getNumbersInRange(from.y, to.y)
+            val xValues = getNumbersInRange(from.col, to.col)
+            val yValues = getNumbersInRange(from.row, to.row)
             xValues.zip(yValues) { x, y -> Point(x, y) }
         }
     }
@@ -80,8 +80,8 @@ fun getNumbersInRange(from: Int, to: Int) : List<Int> {
 }
 
 data class Point(
-    val x: Int,
-    val y: Int
+    val col: Int,
+    val row: Int
 ) {
     constructor(string: String) : this(
         string.substringBefore(",").trim().toInt(),
