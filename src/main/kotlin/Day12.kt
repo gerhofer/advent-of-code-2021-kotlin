@@ -119,5 +119,4 @@ data class Node(
         return "Node(letter='$letter', connected=${connected.size}})"
     }
 
-
 }
