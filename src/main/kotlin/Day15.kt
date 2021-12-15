@@ -1,15 +1,7 @@
 object Day15 {
 
     fun part1(filePath: String) {
-        val densities = javaClass.getResource(filePath).readText()
-            .split("\r\n")
-            .map { line ->
-                line.split("")
-                    .filter { it.isNotEmpty() }
-                    .map { chitonDensity ->
-                        ChitonDensity(chitonDensity.toInt())
-                    }
-            }
+        val densities = parseDensities(filePath)
         SIZE = densities.size
 
         densities[0][0].optimumPath = Path(0, mutableListOf(Point(0, 0)))
@@ -21,41 +13,29 @@ object Day15 {
                 }
                 val fromLeft = pathFromLeft(densities, x, y)
                 val fromTop = pathFromTop(densities, x, y)
-                if (fromLeft != null && (fromTop == null || fromLeft.riskLevel < fromTop.riskLevel)) {
+                val shouldChooseLeft = fromLeft != null && (fromTop == null || fromLeft.riskLevel < fromTop.riskLevel)
+                if (shouldChooseLeft) {
                     densities[y][x].optimumPath = fromLeft
-
-                    // check if top could now be approached cheaper and propagate new way
-                    if (y > 0) {
-                        val originalTop = densities[y - 1][x]
-                        if (originalTop.optimumPath != null && fromTop != null && originalTop.optimumPath!!.riskLevel > (fromLeft.riskLevel + originalTop.value)) {
-                            updateWithNewPath(densities, x, y - 1, fromLeft)
-                        }
-                    }
-
+                    checkIfTopCanBeReachedViaBottom(y, densities, x, fromTop, fromLeft)
                 } else {
                     densities[y][x].optimumPath = fromTop
-
-                    if (x > 0) {
-                        // check if left could now be approached cheaper and propagate new way
-                        val originalLeft = densities[y][x - 1]
-                        if (originalLeft.optimumPath != null && fromTop != null && originalLeft.optimumPath!!.riskLevel > (fromTop.riskLevel + originalLeft.value)) {
-                            updateWithNewPath(densities, x - 1, y, fromTop)
-                        }
-                    }
+                    checkIfLeftCanBeReachedViaRight(x, densities, y, fromTop)
                 }
             }
         }
 
-        println(densities.joinToString("\n") { line ->
+        println(densitiesToString(densities))
+    }
+
+    private fun densitiesToString(densities: List<List<ChitonDensity>>) =
+        densities.joinToString("\n") { line ->
             line.joinToString("") {
                 String.format(
                     "%4d",
                     it.optimumPath?.riskLevel ?: -1
                 )
             }
-        })
-
-    }
+        }
 
     fun updateWithNewPath(densities: List<List<ChitonDensity>>, x: Int, y: Int, newPath: Path) {
         val newOptimumPath = newPath.copy(
@@ -63,9 +43,8 @@ object Day15 {
             steps = newPath.steps.plus(Point(x, y)).toMutableList()
         )
         densities[y][x].optimumPath = newOptimumPath
-        // check neighbours and update them with new path!
-        for (neighbour in Point(x, y).getNeighbours()) {
-            // don't update where we came from
+        // check neighbours and update them with new path if this is a shorter path
+        for (neighbour in Point(x, y).getNeighbours().filter { it !in newOptimumPath.steps }) {
             val neighbourDensity = densities[neighbour.y][neighbour.x]
             val neighbourPathSoFar = neighbourDensity.optimumPath
             if (neighbourPathSoFar != null && neighbourPathSoFar.riskLevel > (newOptimumPath.riskLevel + neighbourDensity.value)) {
@@ -98,30 +77,11 @@ object Day15 {
     }
 
     fun part2(filePath: String) {
-        val densities = javaClass.getResource(filePath).readText()
-            .split("\r\n")
-            .map { line ->
-                line.split("")
-                    .filter { it.isNotEmpty() }
-                    .map { chitonDensity ->
-                        ChitonDensity(chitonDensity.toInt())
-                    }.toMutableList()
-            }
+        val densities = parseDensities(filePath)
         val originalSize = densities.size
         SIZE = densities.size * 5
 
-        val bigDensities = MutableList(SIZE) { MutableList(SIZE) { ChitonDensity(0) } }
-
-        for (y in (0 until SIZE)) {
-            val rowModifier = y / originalSize
-            for (x in (0 until SIZE)) {
-                val colModifier = x / originalSize
-                val increasedVal = densities[y % originalSize][x % originalSize].value + rowModifier + colModifier
-                val restByNine = increasedVal % 9
-                bigDensities[y][x].value =  if (restByNine == 0) { 9 } else { restByNine }
-            }
-        }
-
+        val bigDensities = createIncresedDensities(originalSize, densities)
         bigDensities[0][0].optimumPath = Path(0, mutableListOf(Point(0, 0)))
 
         for (y in (bigDensities.indices)) {
@@ -131,39 +91,79 @@ object Day15 {
                 }
                 val fromLeft = pathFromLeft(bigDensities, x, y)
                 val fromTop = pathFromTop(bigDensities, x, y)
-                if (fromLeft != null && (fromTop == null || fromLeft.riskLevel < fromTop.riskLevel)) {
+                val shouldChooseLeft = fromLeft != null && (fromTop == null || fromLeft.riskLevel < fromTop.riskLevel)
+                if (shouldChooseLeft) {
                     bigDensities[y][x].optimumPath = fromLeft
-
-                    // check if top could now be approached cheaper and propagate new way
-                    if (y > 0) {
-                        val originalTop = bigDensities[y - 1][x]
-                        if (originalTop.optimumPath != null && fromTop != null && originalTop.optimumPath!!.riskLevel > (fromLeft.riskLevel + originalTop.value)) {
-                            updateWithNewPath(bigDensities, x, y - 1, fromLeft)
-                        }
-                    }
-
+                    checkIfTopCanBeReachedViaBottom(y, bigDensities, x, fromTop, fromLeft)
                 } else {
                     bigDensities[y][x].optimumPath = fromTop
-
-                    // check if left could now be approached cheaper and propagate new way
-                    if (x > 0) {
-                        val originalLeft = bigDensities[y][x - 1]
-                        if (originalLeft.optimumPath != null && fromTop != null && originalLeft.optimumPath!!.riskLevel > (fromTop.riskLevel + originalLeft.value)) {
-                            updateWithNewPath(bigDensities, x - 1, y, fromTop)
-                        }
-                    }
+                    checkIfLeftCanBeReachedViaRight(x, bigDensities, y, fromTop)
                 }
             }
         }
 
-        println(bigDensities.joinToString("\n") { line ->
-            line.joinToString("") {
-                String.format(
-                    "%10d",
-                    it.optimumPath?.riskLevel ?: -1
-                )
+        println(densitiesToString(bigDensities))
+    }
+
+    private fun createIncresedDensities(
+        originalSize: Int,
+        densities: List<MutableList<ChitonDensity>>
+    ): MutableList<MutableList<ChitonDensity>> {
+        val bigDensities = MutableList(SIZE) { MutableList(SIZE) { ChitonDensity(0) } }
+
+        for (y in (0 until SIZE)) {
+            val rowModifier = y / originalSize
+            for (x in (0 until SIZE)) {
+                val colModifier = x / originalSize
+                val increasedVal = densities[y % originalSize][x % originalSize].value + rowModifier + colModifier
+                val restByNine = increasedVal % 9
+                bigDensities[y][x].value = if (restByNine == 0) {
+                    9
+                } else {
+                    restByNine
+                }
             }
-        })
+        }
+        return bigDensities
+    }
+
+    private fun parseDensities(filePath: String) = javaClass.getResource(filePath).readText()
+        .split("\r\n")
+        .map { line ->
+            line.split("")
+                .filter { it.isNotEmpty() }
+                .map { chitonDensity ->
+                    ChitonDensity(chitonDensity.toInt())
+                }.toMutableList()
+        }
+
+    private fun checkIfLeftCanBeReachedViaRight(
+        x: Int,
+        bigDensities: MutableList<MutableList<ChitonDensity>>,
+        y: Int,
+        fromTop: Path?
+    ) {
+        if (x > 0) {
+            val originalLeft = bigDensities[y][x - 1]
+            if (originalLeft.optimumPath != null && fromTop != null && originalLeft.optimumPath!!.riskLevel > (fromTop.riskLevel + originalLeft.value)) {
+                updateWithNewPath(bigDensities, x - 1, y, fromTop)
+            }
+        }
+    }
+
+    private fun checkIfTopCanBeReachedViaBottom(
+        y: Int,
+        bigDensities: MutableList<MutableList<ChitonDensity>>,
+        x: Int,
+        fromTop: Path?,
+        fromLeft: Path?
+    ) {
+        if (y > 0) {
+            val originalTop = bigDensities[y - 1][x]
+            if (originalTop.optimumPath != null && fromTop != null && originalTop.optimumPath!!.riskLevel > (fromLeft.riskLevel + originalTop.value)) {
+                updateWithNewPath(bigDensities, x, y - 1, fromLeft)
+            }
+        }
     }
 
     data class Path(
