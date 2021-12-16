@@ -58,7 +58,11 @@ fun main () {
 //    Day14.part1("day14.txt")
 //    Day14.part2("day14.txt")
 
-    println("Day 15")
-    Day15.part1("day15.txt")
-    Day15.part2("day15.txt")
+//    println("Day 15")
+//    Day15.part1("day15.txt")
+//    Day15.part2("day15.txt")
+
+    println("Day 16")
+    Day16.part1("day16.txt")
+    Day16.part2("day16.txt")
 }

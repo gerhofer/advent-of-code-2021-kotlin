@@ -135,7 +135,7 @@ object Day15 {
                 .map { chitonDensity ->
                     ChitonDensity(chitonDensity.toInt())
                 }.toMutableList()
-        }
+        }.toMutableList()
 
     private fun checkIfLeftCanBeReachedViaRight(
         x: Int,
@@ -160,8 +160,8 @@ object Day15 {
     ) {
         if (y > 0) {
             val originalTop = bigDensities[y - 1][x]
-            if (originalTop.optimumPath != null && fromTop != null && originalTop.optimumPath!!.riskLevel > (fromLeft.riskLevel + originalTop.value)) {
-                updateWithNewPath(bigDensities, x, y - 1, fromLeft)
+            if (originalTop.optimumPath != null && fromTop != null && originalTop.optimumPath!!.riskLevel > (fromLeft!!.riskLevel + originalTop.value)) {
+                updateWithNewPath(bigDensities, x, y - 1, fromLeft!!)
             }
         }
     }
