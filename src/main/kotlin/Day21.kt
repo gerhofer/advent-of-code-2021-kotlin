@@ -62,20 +62,18 @@ object Day21 {
             .split("\r\n")
             .map { it.substringAfter(":").trim().toInt() }
 
-        rollDice(Game(player1, 0, player2, 0,  true), 1)
+        rollDice(Game(player1, 0, player2, 0, true), 1)
 
         println(player1Wins)
         println(player2Wins)
     }
 
-    fun rollDice(game: Game, worth: Int) {
+    fun rollDice(game: Game, worth: Long) {
         if (game.player1Score >= 21) {
             // println("player 1 wins $worth additional times")
             player1Wins += worth
             return
-        }
-
-        if (game.player2Score >= 21) {
+        } else if (game.player2Score >= 21) {
             // println("player 2 wins $worth additional times")
             player2Wins += worth
             return
@@ -84,46 +82,130 @@ object Day21 {
         // move and add to score
         if (game.player1Turn) {
             val newPosition3 = moveSinglePawn(game.player1Position, 3)
-            rollDice(game.copy(player1Position =  newPosition3, player1Score = game.player1Score + newPosition3, player1Turn = false), worth * 1)
+            rollDice(
+                game.copy(
+                    player1Position = newPosition3,
+                    player1Score = game.player1Score + newPosition3,
+                    player1Turn = false
+                ), worth * 1
+            )
 
             val newPosition4 = moveSinglePawn(game.player1Position, 4)
-            rollDice(game.copy(player1Position =  newPosition4, player1Score = game.player1Score + newPosition4, player1Turn = false), worth * 3)
+            rollDice(
+                game.copy(
+                    player1Position = newPosition4,
+                    player1Score = game.player1Score + newPosition4,
+                    player1Turn = false
+                ), worth * 3
+            )
 
             val newPosition5 = moveSinglePawn(game.player1Position, 5)
-            rollDice(game.copy(player1Position =  newPosition5, player1Score = game.player1Score + newPosition5, player1Turn = false), worth * 6)
+            rollDice(
+                game.copy(
+                    player1Position = newPosition5,
+                    player1Score = game.player1Score + newPosition5,
+                    player1Turn = false
+                ), worth * 6
+            )
 
             val newPosition6 = moveSinglePawn(game.player1Position, 6)
-            rollDice(game.copy(player1Position =  newPosition6, player1Score = game.player1Score + newPosition6, player1Turn = false), worth * 7)
+            rollDice(
+                game.copy(
+                    player1Position = newPosition6,
+                    player1Score = game.player1Score + newPosition6,
+                    player1Turn = false
+                ), worth * 7
+            )
 
             val newPosition7 = moveSinglePawn(game.player1Position, 7)
-            rollDice(game.copy(player1Position =  newPosition7, player1Score = game.player1Score + newPosition7, player1Turn = false), worth * 6)
+            rollDice(
+                game.copy(
+                    player1Position = newPosition7,
+                    player1Score = game.player1Score + newPosition7,
+                    player1Turn = false
+                ), worth * 6
+            )
 
             val newPosition8 = moveSinglePawn(game.player1Position, 8)
-            rollDice(game.copy(player1Position =  newPosition8, player1Score = game.player1Score + newPosition8, player1Turn = false), worth * 3)
+            rollDice(
+                game.copy(
+                    player1Position = newPosition8,
+                    player1Score = game.player1Score + newPosition8,
+                    player1Turn = false
+                ), worth * 3
+            )
 
             val newPosition9 = moveSinglePawn(game.player1Position, 9)
-            rollDice(game.copy(player1Position =  newPosition9, player1Score = game.player1Score + newPosition9, player1Turn = false), worth * 1)
+            rollDice(
+                game.copy(
+                    player1Position = newPosition9,
+                    player1Score = game.player1Score + newPosition9,
+                    player1Turn = false
+                ), worth * 1
+            )
         } else {
             val newPosition3 = moveSinglePawn(game.player2Position, 3)
-            rollDice(game.copy(player2Position =  newPosition3, player2Score = game.player2Score + newPosition3, player1Turn = true), worth * 1)
+            rollDice(
+                game.copy(
+                    player2Position = newPosition3,
+                    player2Score = game.player2Score + newPosition3,
+                    player1Turn = true
+                ), worth * 1
+            )
 
             val newPosition4 = moveSinglePawn(game.player2Position, 4)
-            rollDice(game.copy(player2Position =  newPosition4, player2Score = game.player2Score + newPosition4, player1Turn = true), worth * 3)
+            rollDice(
+                game.copy(
+                    player2Position = newPosition4,
+                    player2Score = game.player2Score + newPosition4,
+                    player1Turn = true
+                ), worth * 3
+            )
 
             val newPosition5 = moveSinglePawn(game.player2Position, 5)
-            rollDice(game.copy(player2Position =  newPosition5, player2Score = game.player2Score + newPosition5, player1Turn = true), worth * 6)
+            rollDice(
+                game.copy(
+                    player2Position = newPosition5,
+                    player2Score = game.player2Score + newPosition5,
+                    player1Turn = true
+                ), worth * 6
+            )
 
             val newPosition6 = moveSinglePawn(game.player2Position, 6)
-            rollDice(game.copy(player2Position =  newPosition6, player2Score = game.player2Score + newPosition6, player1Turn = true), worth * 7)
+            rollDice(
+                game.copy(
+                    player2Position = newPosition6,
+                    player2Score = game.player2Score + newPosition6,
+                    player1Turn = true
+                ), worth * 7
+            )
 
             val newPosition7 = moveSinglePawn(game.player2Position, 7)
-            rollDice(game.copy(player2Position =  newPosition7, player2Score = game.player2Score + newPosition7, player1Turn = true), worth * 6)
+            rollDice(
+                game.copy(
+                    player2Position = newPosition7,
+                    player2Score = game.player2Score + newPosition7,
+                    player1Turn = true
+                ), worth * 6
+            )
 
             val newPosition8 = moveSinglePawn(game.player2Position, 8)
-            rollDice(game.copy(player2Position =  newPosition8, player2Score = game.player2Score + newPosition8, player1Turn = true), worth * 3)
+            rollDice(
+                game.copy(
+                    player2Position = newPosition8,
+                    player2Score = game.player2Score + newPosition8,
+                    player1Turn = true
+                ), worth * 3
+            )
 
             val newPosition9 = moveSinglePawn(game.player2Position, 9)
-            rollDice(game.copy(player2Position =  newPosition9, player2Score = game.player2Score + newPosition9, player1Turn = true), worth * 1)
+            rollDice(
+                game.copy(
+                    player2Position = newPosition9,
+                    player2Score = game.player2Score + newPosition9,
+                    player1Turn = true
+                ), worth * 1
+            )
         }
     }
 
